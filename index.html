@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basit Okey Altyapısı</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        .istaka { display: flex; gap: 10px; margin-top: 20px; }
+        .tas { border: 2px solid #333; padding: 10px; border-radius: 5px; background: #fff; }
+        .kirmizi { color: red; } .mavi { color: blue; } .siyah { color: black; } .sari { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Okey Masası</h1>
+    <button onclick="tasCek()">Yerden Taş Çek</button>
+    <div id="istaka" class="istaka"></div>
+    <p id="mesajlar"></p>
+
+    <script>
+        // Sunucu adresini buraya yazacaksın (Ücretsiz aldığın Render adresi gibi)
+        const socket = io("http://localhost:3000"); 
+
+        function tasCek() {
+            socket.emit("tasCek");
+        }
+
+        socket.on("tasAlindi", (tas) => {
+            const div = document.createElement("div");
+            div.className = `tas ${tas.renk}`;
+            div.innerText = tas.sayi === 0 ? "OKEY" : tas.sayi;
+            document.getElementById("istaka").appendChild(div);
+        });
+
+        socket.on("bilgi", (msg) => {
+            document.getElementById("mesajlar").innerText = msg;
+        });
+    </script>
+</body>
+</html>
